@@ -9,6 +9,19 @@ CREATE TABLE station (
   sub_id CHAR(2) REFERENCES subdivision(sub_id)
 );
 
+CREATE TABLE station_stats (
+  station_id CHAR(2) PRIMARY KEY REFERENCES station(station_id),
+  no_of_hs INT,
+  ins TEXT,
+  si INT,
+  ssi INT,
+  hc INT,
+  gr1 INT,
+  gr2 INT,
+  total_police_watch INT
+);
+
+
 --assuming the data provided is in toto ⟵⁠(⁠o⁠_⁠O⁠)
 INSERT INTO subdivision (sub_id, name) VALUES
 ('01', 'Jeeyapuram'),
