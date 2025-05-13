@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 void main() => runApp(CriminalFormPage());
 
 class CriminalFormPage extends StatelessWidget {
-  const CriminalFormPage({Key? key}) : super(key: key);
+  const CriminalFormPage({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,6 +38,8 @@ class Page1 extends StatelessWidget {
   final residenceController = TextEditingController();
   final visitedController = TextEditingController();
   final offenderClassController = TextEditingController();
+
+  Page1({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -102,6 +104,8 @@ class Page2 extends StatelessWidget {
   String? selectedEyes;
   String? selectedSight;
   String? isBald;
+
+  Page2({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -183,6 +187,8 @@ class Page3 extends StatelessWidget {
     'Moustache Style': ['Long', 'Chipped', 'Turned-Up', 'Drooping'],
   };
 
+  Page3({super.key});
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: Text("Page 3: Facial Features")),
@@ -239,6 +245,8 @@ class Page4 extends StatelessWidget {
     'Peculiarities of Manner', 'Appearance', 'Deformities', 'Accomplishments', 'Habits'
   ];
 
+  Page4({super.key});
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: Text("Page 4: Marks and Mannerisms")),
@@ -270,6 +278,8 @@ class Page4 extends StatelessWidget {
 }
 
 class Page5 extends StatefulWidget {
+  const Page5({super.key});
+
   @override
   _Page5State createState() => _Page5State();
 }
