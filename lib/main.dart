@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
-import 'homepage.dart';
+import 'package:flutter/services.dart';
+import 'utils/theme.dart';
+import 'utils/constants.dart';
+import 'splash_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+    ),
+  );
   runApp(const MyApp());
 }
 
@@ -11,9 +25,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Crime Management',
-      theme: ThemeData(primarySwatch: Colors.deepPurple),
-      home: const HomePage(),
+      title: 'Trichy Police Department',
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.light,
+      home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

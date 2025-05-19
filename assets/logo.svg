@@ -1,0 +1,6 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="100" r="95" fill="#1A237E" stroke="#FFC107" stroke-width="10"/>
+  <path d="M100 30L115 60L150 65L125 90L130 125L100 110L70 125L75 90L50 65L85 60L100 30Z" fill="#FFC107"/>
+  <circle cx="100" cy="100" r="30" fill="#1A237E" stroke="#FFC107" stroke-width="5"/>
+  <text x="100" y="105" font-family="Arial" font-size="14" fill="#FFFFFF" text-anchor="middle">POLICE</text>
+</svg>
