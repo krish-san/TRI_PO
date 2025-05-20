@@ -172,7 +172,7 @@ class AccusedDetail extends StatelessWidget {
           ),
           child: url.isEmpty
               ? const Icon(Icons.photo_camera_outlined, size: 60, color: Colors.grey)
-              : Container(color:Colors.blue,
+              : Container(color:Colors.grey.shade300,
               child:Image.network(url,fit:BoxFit.cover),),
         ),
         const SizedBox(height: 6),
