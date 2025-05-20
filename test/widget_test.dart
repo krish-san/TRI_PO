@@ -1,54 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:criminal_form/accused_entry.dart';
+import 'package:crime_management_system/accused_entry.dart';
 
 void main() {
-  testWidgets('Page 1 renders all fields and Next button', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: Page1()));
+  testWidgets('Step 0: Personal Details form renders correctly', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: CriminalFormPage()));
 
     expect(find.text('Name and Aliases'), findsOneWidget);
     expect(find.text("Father's/Husband's Name"), findsOneWidget);
-    expect(find.widgetWithText(ElevatedButton, 'Next'), findsOneWidget);
   });
 
-  testWidgets('Page 2 shows modified hair, bald, appearance, walk, talk', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: Page2()));
+  testWidgets('Step 1: Physical Description fields render correctly', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: CriminalFormPage()));
+
+    // Move to Step 1
+    await tester.tap(find.text('NEXT'));
+    await tester.pumpAndSettle();
 
     expect(find.text('Hair Color'), findsOneWidget);
     expect(find.text('Bald?'), findsOneWidget);
     expect(find.text('Appearance (Upright/Slovenly)'), findsOneWidget);
     expect(find.text('Walk (Fast/Slow)'), findsOneWidget);
     expect(find.text('Talk (Fast/Slow, Loud/Harsh)'), findsOneWidget);
-    expect(find.widgetWithText(ElevatedButton, 'Next'), findsOneWidget);
   });
 
-  testWidgets('Page 3 shows facial features dropdowns and descriptions', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: Page3()));
+  testWidgets('Step 2: Facial Features and dropdowns render correctly', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: CriminalFormPage()));
+
+    // Move to Step 2
+    await tester.tap(find.text('NEXT'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('NEXT'));
+    await tester.pumpAndSettle();
 
     expect(find.text('Beard - Color, Length, Style'), findsOneWidget);
     expect(find.text('Moustache - Color, Length'), findsOneWidget);
-    expect(find.widgetWithText(ElevatedButton, 'Next'), findsOneWidget);
   });
 
-  testWidgets('Page 4 includes marks and mannerism fields', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: Page4()));
+  testWidgets('Step 3: Marks and Mannerisms fields render correctly', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: CriminalFormPage()));
+
+    // Move to Step 3
+    for (int i = 0; i < 3; i++) {
+      await tester.tap(find.text('NEXT'));
+      await tester.pumpAndSettle();
+    }
 
     expect(find.text('Marks on Hands'), findsOneWidget);
     expect(find.text('Habits'), findsOneWidget);
-    expect(find.widgetWithText(ElevatedButton, 'Next'), findsOneWidget);
   });
 
-  testWidgets('Page 5 photo upload boxes and submit button work', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: Page5()));
+  testWidgets('Step 4: Photo upload fields and Submit button', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: CriminalFormPage()));
+
+    // Move to Step 4 (Final Step)
+    for (int i = 0; i < 4; i++) {
+      await tester.tap(find.text('NEXT'));
+      await tester.pumpAndSettle();
+    }
 
     expect(find.text('Full Face Photo'), findsOneWidget);
     expect(find.text('Full Length Photo'), findsOneWidget);
     expect(find.text('Head and Shoulder Photo'), findsOneWidget);
-    expect(find.text('Profile Left/Right Photo'), findsOneWidget);
-    expect(find.widgetWithText(ElevatedButton, 'Submit'), findsOneWidget);
+    expect(find.text('Profile Left'), findsOneWidget);
+    expect(find.text('Right Photo'), findsOneWidget);
+    expect(find.text('Submit'), findsOneWidget);
 
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Submit'));
-    await tester.pump();
+    // Submit the form
+    await tester.tap(find.text('Submit'));
+    await tester.pumpAndSettle();
+
     expect(find.text('Form submitted successfully!'), findsOneWidget);
   });
 }

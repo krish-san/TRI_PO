@@ -6,6 +6,7 @@ import 'police_entry.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:crime_management_system/accused_records.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -579,7 +580,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CriminalFormPage()),
+                MaterialPageRoute(builder: (context) => AccusedDashboard()),
               );
             },
           ),
