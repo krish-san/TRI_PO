@@ -20,7 +20,8 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-// Routes for accused data
+// Routes
+app.use('/api/police', require('./routes/police'));
 const accusedRoutes = require('./routes/accused');
 app.use('/api/accused', accusedRoutes);
 
