@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 require('dotenv').config();
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -33,4 +34,13 @@ app.use((err, req, res, next) => {
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+});
+
+
+// Serve static files from the public folder
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve index.html for root or any unknown route (for SPAs)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
