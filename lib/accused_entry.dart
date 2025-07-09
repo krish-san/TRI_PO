@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
+import 'package:path/path.dart' as p;
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -718,7 +718,7 @@ Future<void> submitAccused({
         label,
         stream,
         length,
-        filename: basename(file.path),
+        filename: p.basename(file.path),
       );
       request.files.add(multipartFile);
     }
