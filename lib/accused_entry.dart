@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -224,60 +226,102 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
     }
   }
 
-  void _submitForm() {
-    // In a real app, we would send the data to a backend server
-    setState(() {
-      _isCompleted = true;
-    });
-    
-    // Show success dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(Icons.check_circle, color: Colors.green, size: 28),
-            SizedBox(width: 10),
-            Text("Success"),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Accused information submitted successfully!",
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 16),
-            Text(
-              "Name: ${nameController.text}",
-              style: TextStyle(fontWeight: FontWeight.w500),
-            ),
-            Text(
-              "Age: ${ageController.text}",
-              style: TextStyle(fontWeight: FontWeight.w500),
-            ),
-            if (photoFiles.isNotEmpty)
-              Text(
-                "Photos uploaded: ${photoFiles.length}",
-                style: TextStyle(fontWeight: FontWeight.w500),
-              ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
-            },
-            child: Text("OK"),
-          ),
+  void _submitForm() async {
+  setState(() {
+    _isCompleted = true;
+  });
+
+  await submitAccused(
+    fields: {
+      'name': nameController.text,
+      'fatherName': fatherController.text,
+      'caste': casteController.text,
+      'profession': professionController.text,
+      'nativePlace': nativePlaceController.text,
+      'witnesses': witnessesController.text,
+      'residence': residenceController.text,
+      'placesVisited': visitedController.text,
+      'offenderClass': offenderClassController.text,
+      'age': ageController.text,
+      'height': heightController.text,
+      'build': selectedBuild ?? '',
+      'hairColor': hairColorController.text,
+      'isBald': isBald ?? '',
+      'hairCutStyle': cutController.text,
+      'eyebrows': selectedEyebrows ?? '',
+      'forehead': selectedForehead ?? '',
+      'eyes': selectedEyes ?? '',
+      'irisColor': irisController.text,
+      'sight': selectedSight ?? '',
+      'appearance': appearanceController.text,
+      'walk': walkController.text,
+      'talk': talkController.text,
+      'nose': facialFeatureValues['Nose'] ?? '',
+      'mouth': facialFeatureValues['Mouth'] ?? '',
+      'lips': facialFeatureValues['Lips'] ?? '',
+      'teeth': facialFeatureValues['Teeth'] ?? '',
+      'finger': facialFeatureValues['Finger'] ?? '',
+      'chin': facialFeatureValues['Chin'] ?? '',
+      'ears': facialFeatureValues['Ears'] ?? '',
+      'face': facialFeatureValues['Face'] ?? '',
+      'complexion': facialFeatureValues['Complexion'] ?? '',
+      'moustacheStyle': facialFeatureValues['Moustache Style'] ?? '',
+      'beardDetails': beardController.text,
+      'moustacheDetails': moustacheDetailController.text,
+      'otherDescription': otherDescriptionController.text,
+      'marksHands': marksControllers[0].text,
+      'marksFace': marksControllers[1].text,
+      'marksKnees': marksControllers[2].text,
+      'marksFeet': marksControllers[3].text,
+      'peculiarities': marksControllers[4].text,
+      'appearanceDetails': marksControllers[5].text,
+      'deformities': marksControllers[6].text,
+      'accomplishments': marksControllers[7].text,
+      'habits': marksControllers[8].text,
+      'relatives': historyControllers[0].text,
+      'associates': historyControllers[1].text,
+      'propertyDisposal': historyControllers[2].text,
+      'pastArrests': historyControllers[3].text,
+      'crimeLocalities': historyControllers[4].text,
+      'criminalHistory': historyControllers[5].text,
+      'suspicionCases': historyControllers[6].text,
+      'convictions': historyControllers[7].text,
+      'currentDoings': historyControllers[8].text,
+    },
+    photos: {
+      'fullFacePhoto': photoFiles['Full Face Photo'],
+      'fullLengthPhoto': photoFiles['Full Length Photo'],
+      'headShoulderPhoto': photoFiles['Head and Shoulder Photo'],
+      'profileLeftPhoto': photoFiles['Profile Left'],
+      'profileRightPhoto': photoFiles['Right Photo'],
+    },
+  );
+
+  // Optionally show confirmation
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      title: Row(
+        children: [
+          Icon(Icons.check_circle, color: Colors.green, size: 28),
+          SizedBox(width: 10),
+          Text("Success"),
         ],
       ),
-    );
-  }
+      content: Text("Accused entry submitted successfully."),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // dialog
+            Navigator.of(context).pop(); // page
+          },
+          child: Text("OK"),
+        ),
+      ],
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -654,3 +698,43 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
     );
   }
 }
+// This function is used to submit the accused data to the server
+Future<void> submitAccused({
+  required Map<String, String> fields,
+  required Map<String, File?> photos,
+}) async {
+  final uri = Uri.parse("http://localhost:3000/api/accused"); // change if hosted
+
+  final request = http.MultipartRequest('POST', uri);
+  request.fields.addAll(fields);
+
+  for (final entry in photos.entries) {
+    final label = entry.key;
+    final file = entry.value;
+    if (file != null) {
+      final stream = http.ByteStream(file.openRead());
+      final length = await file.length();
+      final multipartFile = http.MultipartFile(
+        label,
+        stream,
+        length,
+        filename: basename(file.path),
+      );
+      request.files.add(multipartFile);
+    }
+  }
+
+  try {
+    final response = await request.send();
+    if (response.statusCode == 201) {
+      print("✅ Submitted successfully");
+    } else {
+      print("❌ Failed: ${response.statusCode}");
+      final body = await response.stream.bytesToString();
+      print("Error: $body");
+    }
+  } catch (e) {
+    print("⚠️ Error: $e");
+  }
+}
+// This function can is called in the _submitForm method to send data to the server

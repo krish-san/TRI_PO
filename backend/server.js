@@ -37,10 +37,11 @@ app.listen(port, () => {
 });
 
 
-// Serve static files from the public folder
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve Flutter Web static files
+app.use(express.static(path.join(__dirname, '..', 'builds', 'web')));
 
-// Serve index.html for root or any unknown route (for SPAs)
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// Fallback route for Flutter Web routing (SPA)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'builds', 'web', 'index.html'));
 });
+

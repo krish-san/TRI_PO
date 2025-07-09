@@ -3,6 +3,8 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const pool = require('../db');
+const fs = require('fs');
+
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -29,8 +31,9 @@ router.post('/', upload.fields([
         const photos = {};
         if (req.files) {
             Object.keys(req.files).forEach(key => {
-                photos[key] = req.files[key][0].path;
-            });
+            photos[key] = fs.readFileSync(req.files[key][0].path);  // binary buffer
+        });
+
         }
 
         const query = `
