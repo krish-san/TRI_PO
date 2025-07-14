@@ -16,6 +16,7 @@ void main() {
       statusBarIconBrightness: Brightness.light,
     ),
   );
+  print("BASE URL = ${getBaseUrl()}");//just for debugging
   runApp(const MyApp());
 }
 

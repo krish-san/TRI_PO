@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'config.dart';//configuration file for base URL
 
 class CriminalFormPage extends StatelessWidget {
   const CriminalFormPage({Key? key}) : super(key: key);
@@ -703,7 +704,12 @@ Future<void> submitAccused({
   required Map<String, String> fields,
   required Map<String, File?> photos,
 }) async {
-  final uri = Uri.parse("http://localhost:3000/api/accused"); // change if hosted
+  // Print the current mode for debugging 
+    print("App is running in ${kReleaseMode ? 'RELEASE' : 'DEBUG'} mode");
+  // Ensure the base URL is correctly set based on the environment
+  final baseUrl = getBaseUrl();  // Use the getBaseUrl function to get the correct base URL from config.dart
+  print("Submitting to: $baseUrl");
+  final uri = Uri.parse("$baseUrl/api/accused");
 
   final request = http.MultipartRequest('POST', uri);
   request.fields.addAll(fields);
