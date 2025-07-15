@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart'; // Add this import for kReleaseMode
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
+import 'package:path/path.dart' as path;
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'config.dart';//configuration file for base URL
+import 'config.dart'; //configuration file for base URL
 
 class CriminalFormPage extends StatelessWidget {
   const CriminalFormPage({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,14 +32,15 @@ class CriminalFormPage extends StatelessWidget {
       body: AccusedFormStepper(),
     );
   }
-  
+
   void _showHelpDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (BuildContext context) => AlertDialog(
         title: Row(
           children: [
-            Icon(Icons.help_outline, color: Theme.of(context).colorScheme.primary),
+            Icon(Icons.help_outline,
+                color: Theme.of(context).colorScheme.primary),
             const SizedBox(width: 10),
             const Text("Help"),
           ],
@@ -94,7 +96,7 @@ class AccusedFormStepper extends StatefulWidget {
 class _AccusedFormStepperState extends State<AccusedFormStepper> {
   int _currentStep = 0;
   bool _isCompleted = false;
-  
+
   // Personal Details
   final nameController = TextEditingController();
   final fatherController = TextEditingController();
@@ -122,28 +124,60 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
   final otherDescriptionController = TextEditingController();
 
   // Marks and Mannerisms
-  final List<TextEditingController> marksControllers = List.generate(9, (_) => TextEditingController());
+  final List<TextEditingController> marksControllers =
+      List.generate(9, (_) => TextEditingController());
   final List<String> marksLabels = [
-    'Marks on Hands', 'Marks on Face', 'Marks on Knees', 'Marks on Feet',
-    'Peculiarities of Manner', 'Appearance', 'Deformities', 'Accomplishments', 'Habits'
+    'Marks on Hands',
+    'Marks on Face',
+    'Marks on Knees',
+    'Marks on Feet',
+    'Peculiarities of Manner',
+    'Appearance',
+    'Deformities',
+    'Accomplishments',
+    'Habits'
   ];
 
   // Social & Crime History
-  final List<TextEditingController> historyControllers = List.generate(9, (_) => TextEditingController());
+  final List<TextEditingController> historyControllers =
+      List.generate(9, (_) => TextEditingController());
   final List<String> historyLabels = [
-    'Relatives', 'Associates', 'Property Disposal Info', 'Past Arrests', 'Crime Localities',
-    'Criminal History', 'Suspicion Cases', 'Convictions', 'Current Doings'
+    'Relatives',
+    'Associates',
+    'Property Disposal Info',
+    'Past Arrests',
+    'Crime Localities',
+    'Criminal History',
+    'Suspicion Cases',
+    'Convictions',
+    'Current Doings'
   ];
 
   // Dropdown values
   final buildOptions = ['Thin', 'Stout', 'Erect', 'Stooping'];
   final eyebrowOptions = ['Thick', 'Thin', 'Arched', 'Straight', 'Meeting'];
-  final foreheadOptions = ['High', 'Low', 'Upright', 'Sloping', 'Broad', 'Narrow'];
+  final foreheadOptions = [
+    'High',
+    'Low',
+    'Upright',
+    'Sloping',
+    'Broad',
+    'Narrow'
+  ];
   final eyeOptions = ['Large', 'Small', 'Wide-Set', 'Close-Set'];
   final sightOptions = ['Long', 'Short', 'Wears Glasses'];
   final yesNo = ['Yes', 'No'];
   final dropdownFields = [
-    'Nose', 'Mouth', 'Lips', 'Teeth', 'Finger', 'Chin', 'Ears', 'Face', 'Complexion', 'Moustache Style'
+    'Nose',
+    'Mouth',
+    'Lips',
+    'Teeth',
+    'Finger',
+    'Chin',
+    'Ears',
+    'Face',
+    'Complexion',
+    'Moustache Style'
   ];
   final Map<String, List<String>> options = {
     'Nose': ['Roman', 'Straight', 'Snub', 'Hooked', 'Flat'],
@@ -166,10 +200,14 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
   String? selectedSight;
   String? isBald;
   Map<String, String?> facialFeatureValues = {};
-  
+
   // Photos
   final List<String> photoLabels = [
-    'Full Face Photo', 'Full Length Photo', 'Head and Shoulder Photo', 'Profile Left', 'Right Photo'
+    'Full Face Photo',
+    'Full Length Photo',
+    'Head and Shoulder Photo',
+    'Profile Left',
+    'Right Photo'
   ];
   final Map<String, File?> photoFiles = {};
 
@@ -181,7 +219,7 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
       facialFeatureValues[field] = null;
     }
   }
-  
+
   @override
   void dispose() {
     // Dispose all controllers
@@ -205,15 +243,15 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
     beardController.dispose();
     moustacheDetailController.dispose();
     otherDescriptionController.dispose();
-    
+
     for (var controller in marksControllers) {
       controller.dispose();
     }
-    
+
     for (var controller in historyControllers) {
       controller.dispose();
     }
-    
+
     super.dispose();
   }
 
@@ -228,101 +266,101 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
   }
 
   void _submitForm() async {
-  setState(() {
-    _isCompleted = true;
-  });
+    setState(() {
+      _isCompleted = true;
+    });
 
-  await submitAccused(
-    fields: {
-      'name': nameController.text,
-      'fatherName': fatherController.text,
-      'caste': casteController.text,
-      'profession': professionController.text,
-      'nativePlace': nativePlaceController.text,
-      'witnesses': witnessesController.text,
-      'residence': residenceController.text,
-      'placesVisited': visitedController.text,
-      'offenderClass': offenderClassController.text,
-      'age': ageController.text,
-      'height': heightController.text,
-      'build': selectedBuild ?? '',
-      'hairColor': hairColorController.text,
-      'isBald': isBald ?? '',
-      'hairCutStyle': cutController.text,
-      'eyebrows': selectedEyebrows ?? '',
-      'forehead': selectedForehead ?? '',
-      'eyes': selectedEyes ?? '',
-      'irisColor': irisController.text,
-      'sight': selectedSight ?? '',
-      'appearance': appearanceController.text,
-      'walk': walkController.text,
-      'talk': talkController.text,
-      'nose': facialFeatureValues['Nose'] ?? '',
-      'mouth': facialFeatureValues['Mouth'] ?? '',
-      'lips': facialFeatureValues['Lips'] ?? '',
-      'teeth': facialFeatureValues['Teeth'] ?? '',
-      'finger': facialFeatureValues['Finger'] ?? '',
-      'chin': facialFeatureValues['Chin'] ?? '',
-      'ears': facialFeatureValues['Ears'] ?? '',
-      'face': facialFeatureValues['Face'] ?? '',
-      'complexion': facialFeatureValues['Complexion'] ?? '',
-      'moustacheStyle': facialFeatureValues['Moustache Style'] ?? '',
-      'beardDetails': beardController.text,
-      'moustacheDetails': moustacheDetailController.text,
-      'otherDescription': otherDescriptionController.text,
-      'marksHands': marksControllers[0].text,
-      'marksFace': marksControllers[1].text,
-      'marksKnees': marksControllers[2].text,
-      'marksFeet': marksControllers[3].text,
-      'peculiarities': marksControllers[4].text,
-      'appearanceDetails': marksControllers[5].text,
-      'deformities': marksControllers[6].text,
-      'accomplishments': marksControllers[7].text,
-      'habits': marksControllers[8].text,
-      'relatives': historyControllers[0].text,
-      'associates': historyControllers[1].text,
-      'propertyDisposal': historyControllers[2].text,
-      'pastArrests': historyControllers[3].text,
-      'crimeLocalities': historyControllers[4].text,
-      'criminalHistory': historyControllers[5].text,
-      'suspicionCases': historyControllers[6].text,
-      'convictions': historyControllers[7].text,
-      'currentDoings': historyControllers[8].text,
-    },
-    photos: {
-      'fullFacePhoto': photoFiles['Full Face Photo'],
-      'fullLengthPhoto': photoFiles['Full Length Photo'],
-      'headShoulderPhoto': photoFiles['Head and Shoulder Photo'],
-      'profileLeftPhoto': photoFiles['Profile Left'],
-      'profileRightPhoto': photoFiles['Right Photo'],
-    },
-  );
+    await submitAccused(
+      fields: {
+        'name': nameController.text,
+        'fatherName': fatherController.text,
+        'caste': casteController.text,
+        'profession': professionController.text,
+        'nativePlace': nativePlaceController.text,
+        'witnesses': witnessesController.text,
+        'residence': residenceController.text,
+        'placesVisited': visitedController.text,
+        'offenderClass': offenderClassController.text,
+        'age': ageController.text,
+        'height': heightController.text,
+        'build': selectedBuild ?? '',
+        'hairColor': hairColorController.text,
+        'isBald': isBald ?? '',
+        'hairCutStyle': cutController.text,
+        'eyebrows': selectedEyebrows ?? '',
+        'forehead': selectedForehead ?? '',
+        'eyes': selectedEyes ?? '',
+        'irisColor': irisController.text,
+        'sight': selectedSight ?? '',
+        'appearance': appearanceController.text,
+        'walk': walkController.text,
+        'talk': talkController.text,
+        'nose': facialFeatureValues['Nose'] ?? '',
+        'mouth': facialFeatureValues['Mouth'] ?? '',
+        'lips': facialFeatureValues['Lips'] ?? '',
+        'teeth': facialFeatureValues['Teeth'] ?? '',
+        'finger': facialFeatureValues['Finger'] ?? '',
+        'chin': facialFeatureValues['Chin'] ?? '',
+        'ears': facialFeatureValues['Ears'] ?? '',
+        'face': facialFeatureValues['Face'] ?? '',
+        'complexion': facialFeatureValues['Complexion'] ?? '',
+        'moustacheStyle': facialFeatureValues['Moustache Style'] ?? '',
+        'beardDetails': beardController.text,
+        'moustacheDetails': moustacheDetailController.text,
+        'otherDescription': otherDescriptionController.text,
+        'marksHands': marksControllers[0].text,
+        'marksFace': marksControllers[1].text,
+        'marksKnees': marksControllers[2].text,
+        'marksFeet': marksControllers[3].text,
+        'peculiarities': marksControllers[4].text,
+        'appearanceDetails': marksControllers[5].text,
+        'deformities': marksControllers[6].text,
+        'accomplishments': marksControllers[7].text,
+        'habits': marksControllers[8].text,
+        'relatives': historyControllers[0].text,
+        'associates': historyControllers[1].text,
+        'propertyDisposal': historyControllers[2].text,
+        'pastArrests': historyControllers[3].text,
+        'crimeLocalities': historyControllers[4].text,
+        'criminalHistory': historyControllers[5].text,
+        'suspicionCases': historyControllers[6].text,
+        'convictions': historyControllers[7].text,
+        'currentDoings': historyControllers[8].text,
+      },
+      photos: {
+        'fullFacePhoto': photoFiles['Full Face Photo'],
+        'fullLengthPhoto': photoFiles['Full Length Photo'],
+        'headShoulderPhoto': photoFiles['Head and Shoulder Photo'],
+        'profileLeftPhoto': photoFiles['Profile Left'],
+        'profileRightPhoto': photoFiles['Right Photo'],
+      },
+    );
 
-  // Optionally show confirmation
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => AlertDialog(
-      title: Row(
-        children: [
-          Icon(Icons.check_circle, color: Colors.green, size: 28),
-          SizedBox(width: 10),
-          Text("Success"),
+    // Optionally show confirmation
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.green, size: 28),
+            SizedBox(width: 10),
+            Text("Success"),
+          ],
+        ),
+        content: Text("Accused entry submitted successfully."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // dialog
+              Navigator.of(context).pop(); // page
+            },
+            child: Text("OK"),
+          ),
         ],
       ),
-      content: Text("Accused entry submitted successfully."),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(); // dialog
-            Navigator.of(context).pop(); // page
-          },
-          child: Text("OK"),
-        ),
-      ],
-    ),
-  );
-}
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -347,7 +385,7 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
             onStepTapped: (index) {
               setState(() => _currentStep = index);
             },
-            controlsBuilder: (context, details) {
+            controlsBuilder: (BuildContext context, ControlsDetails details) {
               return Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: Row(
@@ -355,8 +393,8 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: details.onStepContinue,
-                        icon: _currentStep == 4 
-                            ? Icon(Icons.check) 
+                        icon: _currentStep == 4
+                            ? Icon(Icons.check)
                             : Icon(Icons.arrow_forward),
                         label: Text(_currentStep == 4 ? 'Submit' : 'Continue'),
                         style: ElevatedButton.styleFrom(
@@ -399,18 +437,20 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
   Step _buildPersonalDetailsStep() {
     return Step(
       isActive: _currentStep >= 0,
-      title: Text('Personal Details', style: TextStyle(fontWeight: FontWeight.bold)),
+      title: Text('Personal Details',
+          style: TextStyle(fontWeight: FontWeight.bold)),
       content: Column(
         children: [
-          field("Name and Aliases", nameController, required: true),
-          field("Father's/Husband's Name", fatherController, required: true),
-          field("Caste", casteController),
-          field("Trade or Profession", professionController),
-          field("Native Place (District & PS)", nativePlaceController),
-          field("Certifying Witnesses", witnessesController),
-          field("Residence with Dates", residenceController),
-          field("Places Visited with Dates", visitedController),
-          field("Class of Offenders & M.O.", offenderClassController),
+          field(context, "Name and Aliases", nameController, required: true),
+          field(context, "Father's/Husband's Name", fatherController,
+              required: true),
+          field(context, "Caste", casteController),
+          field(context, "Trade or Profession", professionController),
+          field(context, "Native Place (District & PS)", nativePlaceController),
+          field(context, "Certifying Witnesses", witnessesController),
+          field(context, "Residence with Dates", residenceController),
+          field(context, "Places Visited with Dates", visitedController),
+          field(context, "Class of Offenders & M.O.", offenderClassController),
         ],
       ),
     );
@@ -419,23 +459,30 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
   Step _buildPhysicalDescriptionStep() {
     return Step(
       isActive: _currentStep >= 1,
-      title: Text('Physical Description', style: TextStyle(fontWeight: FontWeight.bold)),
+      title: Text('Physical Description',
+          style: TextStyle(fontWeight: FontWeight.bold)),
       content: Column(
         children: [
-          field("Age", ageController, required: true),
-          field("Height", heightController, required: true),
-          dropdownField("Build", buildOptions, selectedBuild, (val) => setState(() => selectedBuild = val)),
-          field("Hair Color", hairColorController),
-          dropdownField("Bald?", yesNo, isBald, (val) => setState(() => isBald = val)),
-          field("Hair Cut Style", cutController),
-          dropdownField("Eyebrows", eyebrowOptions, selectedEyebrows, (val) => setState(() => selectedEyebrows = val)),
-          dropdownField("Forehead", foreheadOptions, selectedForehead, (val) => setState(() => selectedForehead = val)),
-          dropdownField("Eyes", eyeOptions, selectedEyes, (val) => setState(() => selectedEyes = val)),
-          field("Color of Iris", irisController),
-          dropdownField("Sight", sightOptions, selectedSight, (val) => setState(() => selectedSight = val)),
-          field("Appearance (Upright/Slovenly)", appearanceController),
-          field("Walk (Fast/Slow)", walkController),
-          field("Talk (Fast/Slow, Loud/Harsh)", talkController),
+          field(context, "Age", ageController, required: true),
+          field(context, "Height", heightController, required: true),
+          dropdownField(context, "Build", buildOptions, selectedBuild,
+              (val) => setState(() => selectedBuild = val)),
+          field(context, "Hair Color", hairColorController),
+          dropdownField(context, "Bald?", yesNo, isBald,
+              (val) => setState(() => isBald = val)),
+          field(context, "Hair Cut Style", cutController),
+          dropdownField(context, "Eyebrows", eyebrowOptions, selectedEyebrows,
+              (val) => setState(() => selectedEyebrows = val)),
+          dropdownField(context, "Forehead", foreheadOptions, selectedForehead,
+              (val) => setState(() => selectedForehead = val)),
+          dropdownField(context, "Eyes", eyeOptions, selectedEyes,
+              (val) => setState(() => selectedEyes = val)),
+          field(context, "Color of Iris", irisController),
+          dropdownField(context, "Sight", sightOptions, selectedSight,
+              (val) => setState(() => selectedSight = val)),
+          field(context, "Appearance (Upright/Slovenly)", appearanceController),
+          field(context, "Walk (Fast/Slow)", walkController),
+          field(context, "Talk (Fast/Slow, Loud/Harsh)", talkController),
         ],
       ),
     );
@@ -444,20 +491,21 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
   Step _buildFacialFeaturesStep() {
     return Step(
       isActive: _currentStep >= 2,
-      title: Text('Facial Features', style: TextStyle(fontWeight: FontWeight.bold)),
+      title: Text('Facial Features',
+          style: TextStyle(fontWeight: FontWeight.bold)),
       content: Column(
         children: [
-          ...dropdownFields.map(
-            (field) => dropdownField(
-              field, 
-              options[field] ?? [], 
-              facialFeatureValues[field], 
-              (val) => setState(() => facialFeatureValues[field] = val)
-            )
-          ),
-          field("Beard - Color, Length, Style", beardController),
-          field("Moustache - Color, Length", moustacheDetailController),
-          field("Any Other Descriptive Points", otherDescriptionController),
+          ...dropdownFields.map((field) => dropdownField(
+              context,
+              field,
+              options[field] ?? [],
+              facialFeatureValues[field],
+              (val) => setState(() => facialFeatureValues[field] = val))),
+          field(context, "Beard - Color, Length, Style", beardController),
+          field(
+              context, "Moustache - Color, Length", moustacheDetailController),
+          field(context, "Any Other Descriptive Points",
+              otherDescriptionController),
         ],
       ),
     );
@@ -466,13 +514,12 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
   Step _buildMarksStep() {
     return Step(
       isActive: _currentStep >= 3,
-      title: Text('Marks & Mannerisms', style: TextStyle(fontWeight: FontWeight.bold)),
+      title: Text('Marks & Mannerisms',
+          style: TextStyle(fontWeight: FontWeight.bold)),
       content: Column(
         children: [
-          ...List.generate(
-            marksLabels.length, 
-            (i) => field(marksLabels[i], marksControllers[i])
-          ),
+          ...List.generate(marksLabels.length,
+              (i) => field(context, marksLabels[i], marksControllers[i])),
         ],
       ),
     );
@@ -481,13 +528,12 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
   Step _buildSocialCrimeStep() {
     return Step(
       isActive: _currentStep >= 4,
-      title: Text('Social & Crime History', style: TextStyle(fontWeight: FontWeight.bold)),
+      title: Text('Social & Crime History',
+          style: TextStyle(fontWeight: FontWeight.bold)),
       content: Column(
         children: [
-          ...List.generate(
-            historyLabels.length, 
-            (i) => field(historyLabels[i], historyControllers[i])
-          ),
+          ...List.generate(historyLabels.length,
+              (i) => field(context, historyLabels[i], historyControllers[i])),
           SizedBox(height: 16),
           Divider(),
           Padding(
@@ -495,13 +541,13 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
             child: Text(
               "Photo Identification",
               style: TextStyle(
-                fontSize: 16, 
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary
+                color: Theme.of(context).colorScheme.primary, // Already correct
               ),
             ),
           ),
-          ...photoLabels.map((label) => photoUploadField(label)),
+          ...photoLabels.map((label) => photoUploadField(context, label)),
         ],
       ),
     );
@@ -555,7 +601,9 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
     );
   }
 
-  Widget field(String label, TextEditingController controller, {bool required = false}) {
+  Widget field(
+      BuildContext context, String label, TextEditingController controller,
+      {bool required = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -579,7 +627,8 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(color: Colors.grey.shade400),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               filled: true,
               fillColor: Theme.of(context).brightness == Brightness.light
                   ? Colors.grey.shade50
@@ -591,7 +640,8 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
     );
   }
 
-  Widget dropdownField(String label, List<String> items, String? value, Function(String?) onChanged) {
+  Widget dropdownField(BuildContext context, String label, List<String> items,
+      String? value, Function(String?) onChanged) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -615,16 +665,20 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(color: Colors.grey.shade400),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               filled: true,
               fillColor: Theme.of(context).brightness == Brightness.light
                   ? Colors.grey.shade50
                   : Colors.grey.shade900,
             ),
-            items: items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+            items: items
+                .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                .toList(),
             onChanged: onChanged,
             hint: Text("Select ${label.toLowerCase()}"),
-            icon: Icon(Icons.arrow_drop_down, color: Theme.of(context).colorScheme.primary),
+            icon: Icon(Icons.arrow_drop_down,
+                color: Theme.of(context).colorScheme.primary),
             isExpanded: true,
           ),
         ],
@@ -632,7 +686,7 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
     );
   }
 
-  Widget photoUploadField(String label) {
+  Widget photoUploadField(BuildContext context, String label) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Column(
@@ -685,7 +739,8 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
                 children: [
                   TextButton.icon(
                     onPressed: () => setState(() => photoFiles[label] = null),
-                    icon: Icon(Icons.delete_outline, size: 16, color: Colors.red),
+                    icon:
+                        Icon(Icons.delete_outline, size: 16, color: Colors.red),
                     label: Text("Remove", style: TextStyle(color: Colors.red)),
                     style: TextButton.styleFrom(
                       visualDensity: VisualDensity.compact,
@@ -698,49 +753,51 @@ class _AccusedFormStepperState extends State<AccusedFormStepper> {
       ),
     );
   }
-}
+
 // This function is used to submit the accused data to the server
-Future<void> submitAccused({
-  required Map<String, String> fields,
-  required Map<String, File?> photos,
-}) async {
-  // Print the current mode for debugging 
+  Future<void> submitAccused({
+    required Map<String, String> fields,
+    required Map<String, File?> photos,
+  }) async {
+    // Print the current mode for debugging
     print("App is running in ${kReleaseMode ? 'RELEASE' : 'DEBUG'} mode");
-  // Ensure the base URL is correctly set based on the environment
-  final baseUrl = getBaseUrl();  // Use the getBaseUrl function to get the correct base URL from config.dart
-  print("Submitting to: $baseUrl");
-  final uri = Uri.parse("$baseUrl/api/accused");
+    // Ensure the base URL is correctly set based on the environment
+    final baseUrl =
+        getBaseUrl(); // Use the getBaseUrl function to get the correct base URL from config.dart
+    print("Submitting to: $baseUrl");
+    final uri = Uri.parse("$baseUrl/api/accused");
 
-  final request = http.MultipartRequest('POST', uri);
-  request.fields.addAll(fields);
+    final request = http.MultipartRequest('POST', uri);
+    request.fields.addAll(fields);
 
-  for (final entry in photos.entries) {
-    final label = entry.key;
-    final file = entry.value;
-    if (file != null) {
-      final stream = http.ByteStream(file.openRead());
-      final length = await file.length();
-      final multipartFile = http.MultipartFile(
-        label,
-        stream,
-        length,
-        filename: basename(file.path),
-      );
-      request.files.add(multipartFile);
+    for (final entry in photos.entries) {
+      final label = entry.key;
+      final file = entry.value;
+      if (file != null) {
+        final stream = http.ByteStream(file.openRead());
+        final length = await file.length();
+        final multipartFile = http.MultipartFile(
+          label,
+          stream,
+          length,
+          filename: path.basename(file.path),
+        );
+        request.files.add(multipartFile);
+      }
     }
-  }
 
-  try {
-    final response = await request.send();
-    if (response.statusCode == 201) {
-      print("✅ Submitted successfully");
-    } else {
-      print("❌ Failed: ${response.statusCode}");
-      final body = await response.stream.bytesToString();
-      print("Error: $body");
+    try {
+      final response = await request.send();
+      if (response.statusCode == 201) {
+        print("✅ Submitted successfully");
+      } else {
+        print("❌ Failed: ${response.statusCode}");
+        final body = await response.stream.bytesToString();
+        print("Error: $body");
+      }
+    } catch (e) {
+      print("⚠️ Error: $e");
     }
-  } catch (e) {
-    print("⚠️ Error: $e");
   }
 }
 // This function can is called in the _submitForm method to send data to the server

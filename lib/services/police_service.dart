@@ -14,7 +14,8 @@ class PoliceService {
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
-        throw Exception('Failed to search police record: ${response.statusCode}');
+        throw Exception(
+            'Failed to search police record: ${response.statusCode}');
       }
     } catch (e) {
       print('Error searching police record: $e');

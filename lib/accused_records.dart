@@ -13,34 +13,36 @@ class AccusedDashboard extends StatefulWidget {
 
 class _AccusedDashboardState extends State<AccusedDashboard> {
   final AccusedService _accusedService = AccusedService();
-  final List<Map<String, dynamic>> accusedList = List.generate(10, (index) => {
-        "id": "ACC${index + 1}",
-        "firstName": "None",
-        "lastName": "None",
-        "gender": "None",
-        "dob": "None",
-        "age": "None",
-        "height": "None",
-        "weight": "None",
-        "skinColor": "None",
-        "complexion": "None",
-        "eyeColor": "None",
-        "hairColor": "None",
-        "birthMark": "None",
-        "mobileNumber": "None",
-        "fatherName": "None",
-        "motherName": "None",
-        "guardianName": "None",
-        "address": "None",
-        "placeOfBirth": "None",
-        "photos": {
-          "fullFace": "",
-          "fullLength": "",
-          "headAndShoulder": "",
-          "profileLeft": "",
-          "profileRight": ""
-        },
-      });
+  final List<Map<String, dynamic>> accusedList = List.generate(
+      10,
+      (index) => {
+            "id": "ACC${index + 1}",
+            "firstName": "None",
+            "lastName": "None",
+            "gender": "None",
+            "dob": "None",
+            "age": "None",
+            "height": "None",
+            "weight": "None",
+            "skinColor": "None",
+            "complexion": "None",
+            "eyeColor": "None",
+            "hairColor": "None",
+            "birthMark": "None",
+            "mobileNumber": "None",
+            "fatherName": "None",
+            "motherName": "None",
+            "guardianName": "None",
+            "address": "None",
+            "placeOfBirth": "None",
+            "photos": {
+              "fullFace": "",
+              "fullLength": "",
+              "headAndShoulder": "",
+              "profileLeft": "",
+              "profileRight": ""
+            },
+          });
   List<Map<String, dynamic>> filteredList = [];
   bool isLoading = false;
 
@@ -52,7 +54,7 @@ class _AccusedDashboardState extends State<AccusedDashboard> {
 
   Future<void> _handleSearch(String query) async {
     setState(() => isLoading = true);
-    
+
     try {
       if (query.isEmpty) {
         setState(() {
@@ -63,7 +65,7 @@ class _AccusedDashboardState extends State<AccusedDashboard> {
       }
 
       final result = await _accusedService.searchAccusedById(query);
-      
+
       setState(() {
         if (result != null) {
           filteredList = [result];
@@ -78,7 +80,7 @@ class _AccusedDashboardState extends State<AccusedDashboard> {
         filteredList = [];
         isLoading = false;
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Error searching for accused'),
@@ -151,7 +153,8 @@ class _AccusedDashboardState extends State<AccusedDashboard> {
                   : GridView.builder(
                       padding: const EdgeInsets.all(16),
                       itemCount: filteredList.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 16,
                         mainAxisSpacing: 16,
@@ -173,8 +176,8 @@ class _AccusedDashboardState extends State<AccusedDashboard> {
                           },
                           child: Card(
                             elevation: 4,
-                            shape:
-                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -195,7 +198,8 @@ class _AccusedDashboardState extends State<AccusedDashboard> {
                                 Text(
                                   'Accused Number/${index + 1}',
                                   style: const TextStyle(
-                                      fontSize: 16, fontWeight: FontWeight.bold),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -237,7 +241,6 @@ class AccusedDetail extends StatelessWidget {
     );
   }
 
-
   // Helper method to build photo widgets - not used , instead buildPhotoFromBase64
   Widget buildPhoto(String label, String url) {
     return Column(
@@ -250,9 +253,12 @@ class AccusedDetail extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: url.isEmpty
-              ? const Icon(Icons.photo_camera_outlined, size: 60, color: Colors.grey)
-              : Container(color:Colors.grey.shade300,
-              child:Image.network(url,fit:BoxFit.cover),),
+              ? const Icon(Icons.photo_camera_outlined,
+                  size: 60, color: Colors.grey)
+              : Container(
+                  color: Colors.grey.shade300,
+                  child: Image.network(url, fit: BoxFit.cover),
+                ),
         ),
         const SizedBox(height: 6),
         Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
@@ -272,7 +278,8 @@ class AccusedDetail extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: base64Str.isEmpty
-              ? const Icon(Icons.photo_camera_outlined, size: 60, color: Colors.grey)
+              ? const Icon(Icons.photo_camera_outlined,
+                  size: 60, color: Colors.grey)
               : Image.memory(base64Decode(base64Str), fit: BoxFit.cover),
         ),
         const SizedBox(height: 6),
@@ -314,7 +321,8 @@ class AccusedDetail extends StatelessWidget {
             buildInfoRow('Mobile Number:', accused['mobileNumber'] ?? 'None'),
             buildInfoRow('Father\'s Name:', accused['fatherName'] ?? 'None'),
             buildInfoRow('Mother\'s Name:', accused['motherName'] ?? 'None'),
-            buildInfoRow('Guardian\'s Name:', accused['guardianName'] ?? 'None'),
+            buildInfoRow(
+                'Guardian\'s Name:', accused['guardianName'] ?? 'None'),
             buildInfoRow('Address:', accused['address'] ?? 'None'),
             buildInfoRow('Place of Birth:', accused['placeOfBirth'] ?? 'None'),
             const SizedBox(height: 16),
@@ -327,9 +335,12 @@ class AccusedDetail extends StatelessWidget {
               children: [
                 buildPhotoFromBase64('Full Face', photos['fullFace'] ?? ''),
                 buildPhotoFromBase64('Full Length', photos['fullLength'] ?? ''),
-                buildPhotoFromBase64('Head & Shoulders', photos['headAndShoulder'] ?? ''),
-                buildPhotoFromBase64('Profile Left', photos['profileLeft'] ?? ''),
-                buildPhotoFromBase64('Profile Right', photos['profileRight'] ?? ''),
+                buildPhotoFromBase64(
+                    'Head & Shoulders', photos['headAndShoulder'] ?? ''),
+                buildPhotoFromBase64(
+                    'Profile Left', photos['profileLeft'] ?? ''),
+                buildPhotoFromBase64(
+                    'Profile Right', photos['profileRight'] ?? ''),
               ],
             ),
           ],
@@ -338,6 +349,3 @@ class AccusedDetail extends StatelessWidget {
     );
   }
 }
-
-
-
