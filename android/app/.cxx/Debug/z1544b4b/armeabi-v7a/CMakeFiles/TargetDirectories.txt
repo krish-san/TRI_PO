@@ -1,0 +1,2 @@
+/home/saneela/po repo/android/app/.cxx/Debug/z1544b4b/armeabi-v7a/CMakeFiles/edit_cache.dir
+/home/saneela/po repo/android/app/.cxx/Debug/z1544b4b/armeabi-v7a/CMakeFiles/rebuild_cache.dir

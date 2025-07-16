@@ -1,0 +1,2 @@
+/home/saneela/po repo/android/app/.cxx/Debug/1s5e6l5v/x86/CMakeFiles/edit_cache.dir
+/home/saneela/po repo/android/app/.cxx/Debug/1s5e6l5v/x86/CMakeFiles/rebuild_cache.dir
