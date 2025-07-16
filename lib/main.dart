@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'utils/theme.dart';
 import 'utils/constants.dart';
 import 'splash_screen.dart';
+import 'config.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +17,7 @@ void main() {
       statusBarIconBrightness: Brightness.light,
     ),
   );
+  print("BASE URL = ${getBaseUrl()}"); //just for debugging
   runApp(const MyApp());
 }
 
