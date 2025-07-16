@@ -3,6 +3,8 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const pool = require('../db');
+const fs = require('fs');
+
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -29,8 +31,9 @@ router.post('/', upload.fields([
         const photos = {};
         if (req.files) {
             Object.keys(req.files).forEach(key => {
-                photos[key] = req.files[key][0].path;
-            });
+            photos[key] = fs.readFileSync(req.files[key][0].path);  // binary buffer
+        });
+
         }
 
         const query = `
@@ -159,5 +162,45 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch accused' });
     }
 });
+
+// Search accused by ID (case-insensitive)
+router.get('/search', async (req, res) => {
+  try {
+    const { id } = req.query;
+    
+    if (!id) {
+      return res.status(400).json({ error: 'ID parameter is required' });
+    }
+
+    const accused = await Accused.findOne({ 
+      id: { $regex: id, $options: 'i' }  // Case-insensitive search
+    });
+
+    if (!accused) {
+      return res.status(404).json({ error: 'Accused not found' });
+    }
+
+    // Convert BYTEA fields to base64 string
+    const photoFields = [
+      'full_face_photo',
+      'full_length_photo',
+      'head_shoulder_photo',
+      'profile_left_photo',
+      'profile_right_photo'
+    ];
+
+    photoFields.forEach(field => {
+      if (accused[field]) {
+        accused[field] = accused[field].toString('base64'); // base64 encode
+      }
+    });
+
+    res.json(accused);
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 module.exports = router;

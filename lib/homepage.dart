@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:crime_management_system/accused_records.dart';
+import 'police_record.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -581,6 +582,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AccusedDashboard()),
+              );
+            },
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.local_police_outlined,
+            title: "Police Records",
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PoliceDashboard()),
               );
             },
           ),

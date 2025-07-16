@@ -1,5 +1,6 @@
 CREATE TABLE accused (
     id SERIAL PRIMARY KEY,
+
     -- Page 1: Personal Details
     name VARCHAR(200),
     father_husband_name VARCHAR(200),
@@ -64,12 +65,12 @@ CREATE TABLE accused (
     convictions TEXT,
     current_doings TEXT,
     
-    -- Photos
-    full_face_photo VARCHAR(255),
-    full_length_photo VARCHAR(255),
-    head_shoulder_photo VARCHAR(255),
-    profile_left_photo VARCHAR(255),
-    profile_right_photo VARCHAR(255),
-    
+    -- Photos as BYTEA (actual binary image blobs)
+    full_face_photo BYTEA,
+    full_length_photo BYTEA,
+    head_shoulder_photo BYTEA,
+    profile_left_photo BYTEA,
+    profile_right_photo BYTEA,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
